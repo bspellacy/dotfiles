@@ -160,14 +160,6 @@ echo "done"
 # Actual symlink stuff
 #
 
-
-# Atom editor settings
-echo -n "Copying Atom settings.."
-mv -f ~/.atom ~/dotfiles_old/
-ln -s $HOME/dotfiles/atom ~/.atom
-echo "done"
-
-
 declare -a FILES_TO_SYMLINK=(
 
   'shell/shell_aliases'
@@ -241,11 +233,9 @@ main() {
     'crlf'
     'dups'
     'git-delete-merged-branches'
-    'nyan'
     'passive'
     'proofread'
     'ssh-key'
-    'weasel'
   )
 
   for i in ${BINARIES[@]}; do
