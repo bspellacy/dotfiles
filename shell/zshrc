@@ -7,19 +7,20 @@ dirs_to_prepend=(
   "/usr/bin"
   "/usr/local/sbin"
   "/usr/local/git/bin"
-  "/usr/local/"
+  "/usr/local"
   "/usr/local/mysql/bin"
-  "/sw/bin/"
+  "/sw/bin"
   "$HOME/dotfiles/bin"
   "$HOME/bin"
   "$HOME/.rvm/bin"
   "$(brew --prefix ruby)/bin"
   "$(brew --prefix coreutils)/libexec/gnubin" # Add brew-installed GNU core utilities bin
-  "$(brew --prefix)/share/npm/bin" # Add npm-installed package bin
+  "$(brew --prefix)/share/npm/bin" # Add npm-installed package bi
+  "/usr/local/bin"
 )
 
 # Explicitly configured $PATH
-PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+PATH="/usr/bin:/bin:/usr/sbin:/sbin"
 
 for dir in ${(k)dirs_to_prepend[@]}
 do
@@ -33,32 +34,13 @@ unset dirs_to_prepend
 
 export PATH
 
-# Z beats cd most of the time
-. ~/z/z.sh
-
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
-
-# Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
-
-# Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
+export UPDATE_ZSH_DAYS=13
 
 # Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
+DISABLE_AUTO_TITLE="true"
 
 # Uncomment the following line to enable command auto-correction.
 ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-COMPLETION_WAITING_DOTS="true"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=$HOME/dotfiles/zsh
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
@@ -68,7 +50,7 @@ plugins=(fabric brew node npm history vagrant zsh-syntax-highlighting)
 # User configuration
 
 # Load the shell dotfiles
-for file in $HOME/.{shell_exports,shell_aliases,shell_functions,shell_config}; do
+for file in $HOME/.{shell_exports,shell_functions}; do
   [ -r "$file" ] && [ -f "$file" ] && source "$file";
 done;
 unset file;
@@ -76,14 +58,6 @@ unset file;
 if [ -f `brew --prefix`/etc/bash_completion ]; then
   . `brew --prefix`/etc/bash_completion
 fi
-
-# Automatically list directory contents on `cd`.
-# auto-ls () {
-#   emulate -L zsh;
-#   # explicit sexy ls'ing as aliases arent honored in here.
-#   hash gls >/dev/null 2>&1 && CLICOLOR_FORCE=1 gls -aFh --color --group-directories-first || ls
-# }
-# chpwd_functions=( auto-ls $chpwd_functions )
 
 source $ZSH/oh-my-zsh.sh
 
@@ -93,3 +67,7 @@ source $ZSH/oh-my-zsh.sh
 # npm tab completion
 . <(npm completion)
 
+
+# Add prompt via https://github.com/sindresorhus/pure
+autoload -U promptinit; promptinit
+prompt pure
