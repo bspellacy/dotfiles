@@ -150,9 +150,6 @@ webmify () {
   ffmpeg -i "$1" -vcodec libvpx -acodec libvorbis -isync -copyts -aq 80 -threads 3 -qmax 30 -y "$2" "$1.webm"
 }
 
-# visual studio code. a la `subl`
-code () { VSCODE_CWD="$PWD" open -n -b "com.microsoft.VSCodeInsiders" --args $*; }
-
 # `shellswitch [bash |zsh]`
 #   Must be in /etc/shells
 shellswitch () {
