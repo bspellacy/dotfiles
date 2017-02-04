@@ -19,30 +19,12 @@ if [ -f `brew --prefix`/etc/bash_completion ]; then
   . `brew --prefix`/etc/bash_completion
 fi
 
-if [ -f ~/.bash_aliases ]; then
-  . ~/.bash_aliases
-fi
-
-# Git branch in prompt.
-
-parse_git_branch() {
-  git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
-}
-
 #   -------------------------------
 #   1.  ENVIRONMENT CONFIGURATION
 #   -------------------------------
 
 #   Change Prompt
 #   ------------------------------------------------------------
-
-
-#  export PS1="\n________________________________________________________________________________\n$BLUEBOLD\$(parse_git_branch) $RED\w $PURPLE@ $GREEN\h $GREENBOLD(\u) $RESETCOLOR=> $WHITE"
-
-
-# Load the shell dotfiles, and then some:
-# * ~/.path can be used to extend `$PATH`.
-# * ~/.extra can be used for other settings you don’t want to commit.
 
 source ~/.bash_prompt
 
@@ -57,9 +39,9 @@ unset file;
   export PATH="/usr/local/bin:$PATH"
   export PATH="/usr/local/git/bin:/sw/bin/:/usr/local/bin:/usr/local:/usr/local/sbin:/usr/local/mysql/bin:$PATH"
 
-#   Set Default Editor (change 'Nano' to the editor of your choice)
+#   Set Default Editor
 #   ------------------------------------------------------------
-  export EDITOR=/usr/bin/nano
+  export EDITOR=/usr/bin/vim
 
 #   Set default blocksize for ls, df, du
 #   from this: http://hints.macworld.com/comment.php?mode=view&cid=24491
@@ -78,7 +60,6 @@ unset file;
 #   2.  MAKE TERMINAL BETTER
 #   -----------------------------
 
-alias subl='/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl'
 alias ls='ls -GFhl'
 alias cp='cp -iv'                           # Preferred 'cp' implementation
 alias mv='mv -iv'                           # Preferred 'mv' implementation
@@ -86,7 +67,6 @@ alias mkdir='mkdir -pv'                     # Preferred 'mkdir' implementation
 alias ll='ls -FGlAhp'                       # Preferred 'ls' implementation
 alias less='less -FSRXc'                    # Preferred 'less' implementation
 cd() { builtin cd "$@"; ll; }               # Always list directory contents upon 'cd'
-alias cd..='cd ../'                         # Go back 1 directory level (for fast typers)
 alias ..='cd ../'                           # Go back 1 directory level
 alias ...='cd ../../'                       # Go back 2 directory levels
 alias .3='cd ../../../'                     # Go back 3 directory levels
