@@ -15,7 +15,7 @@
   cm = commit -m
   cam = commit -am
   cne = commit --no-edit
-  amend = commit --amend
+  cane = commit --amend --no-edit
 
   # Clone
   cl = clone
