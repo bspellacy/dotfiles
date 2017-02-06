@@ -1,8 +1,0 @@
-build system
-CLI
-frontend
-GUI
-hot key
-hot-key
-web-site
-website
