@@ -19,26 +19,6 @@ if [ -f `brew --prefix`/etc/bash_completion ]; then
   . `brew --prefix`/etc/bash_completion
 fi
 
-#   -------------------------------
-#   1.  ENVIRONMENT CONFIGURATION
-#   -------------------------------
-
-#   Change Prompt
-#   ------------------------------------------------------------
-
-source ~/.bash_prompt
-
-for file in ~/.{bash_prompt}; do
-  [ -r "$file" ] && [ -f "$file" ] && source "$file";
-done;
-unset file;
-
-
-#   Set Paths
-#   ------------------------------------------------------------
-  export PATH="/usr/local/bin:$PATH"
-  export PATH="/usr/local/git/bin:/sw/bin/:/usr/local/bin:/usr/local:/usr/local/sbin:/usr/local/mysql/bin:$PATH"
-
 #   Set Default Editor
 #   ------------------------------------------------------------
   export EDITOR=/usr/bin/vim
@@ -86,3 +66,4 @@ mcd () { mkdir -p "$1" && cd "$1"; }        # mcd:          Makes new Dir and ju
 trash () { command mv "$@" ~/.Trash ; }     # trash:        Moves a file to the MacOS trash
 ql () { qlmanage -p "$*" >& /dev/null; }    # ql:           Opens any file in MacOS Quicklook Preview
 alias DT='tee ~/Desktop/terminalOut.txt'    # DT:           Pipe content to file on MacOS Desktop
+alias python="python3"

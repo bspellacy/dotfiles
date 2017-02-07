@@ -60,6 +60,7 @@ if [ -f `brew --prefix`/etc/bash_completion ]; then
 fi
 
 source $ZSH/oh-my-zsh.sh
+source $HOME/.bashrc
 
 # Source local extra (private) settings specific to machine if it exists
 [ -f ~/.zsh.local ] && source ~/.zsh.local
