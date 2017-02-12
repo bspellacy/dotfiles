@@ -42,16 +42,14 @@ packages=(
     diff-so-fancy
     git-recent
     git-open
-    gulp
     http-server
     servedir
-    flow-bin
-    flow-typed
     npm-check-updates
     webpack
     nodemon
     svgo
     yo
+    pure-prompt
 )
 
 npm install -g "${packages[@]}"

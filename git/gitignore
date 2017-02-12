@@ -18,6 +18,7 @@ Thumbs.db
 
 # Compiled Python files
 *.pyc
+__pycache__
 
 # npm & bower
 bower_components

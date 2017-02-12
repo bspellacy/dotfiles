@@ -45,9 +45,8 @@ brew upgrade --all
 
 apps=(
     rvm
+    pyenv
     nvm
-    mongodb
-    bash-completion2
     coreutils
     moreutils
     findutils
@@ -56,7 +55,6 @@ apps=(
     ponysay
     git
     git-extras
-    hub
     gnu-sed --with-default-names
     grep --with-default-names
     homebrew/completions/brew-cask-completion
@@ -67,11 +65,9 @@ apps=(
     imagemagick --with-webp
     python
     source-highlight
-    the_silver_searcher
     tree
     ffmpeg --with-libvpx
     wget
-    wifi-password
 )
 
 brew install "${apps[@]}"
