@@ -33,8 +33,10 @@ done
 unset dirs_to_prepend
 
 export PATH
-
 export UPDATE_ZSH_DAYS=13
+
+# Use vim movement in terminal
+set -o vi
 
 # Uncomment the following line to disable auto-setting terminal title.
 DISABLE_AUTO_TITLE="true"
