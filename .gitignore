@@ -6,3 +6,4 @@ atom/storage
 atom/blob-store
 chrome
 webstorm/settings.jar
+.DS_Store

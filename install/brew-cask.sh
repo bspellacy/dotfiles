@@ -2,34 +2,25 @@
 
 # Install Caskroom
 brew tap caskroom/cask
-brew install brew-cask
 brew tap caskroom/versions
 
 # Install packages
-apps=(
-    google-drive
-    spectacle
-    flux
-    dash
-    imagealpha
-    imageoptim
-    iterm2
-    atom
-    firefox
-    google-chrome
-    google-chrome-canary
-    malwarebytes-anti-malware
-    glimmerblocker
-    hammerspoon
-    kaleidoscope
-    macdown
-    screenflow
-    spotify
-    slack
-    tower
-    transmit
-    elmedia-player
-    utorrent
+declare -a apps=(
+  atom
+  flux
+  dash
+  iterm2
+  atom
+  firefox
+  google-chrome
+  malwarebytes-anti-malware
+  spotify
+  slack
+  vlc
+  bittorrent
 )
 
-brew cask install "${apps[@]}"
+for app in ${apps[@]}; do
+  echo "Installing for $app..."
+  brew cask install $app
+done

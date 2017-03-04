@@ -1,0 +1,15 @@
+require "awesome_print"
+AwesomePrint.irb!
+
+class Object
+  def uniq_methods
+    public_methods - Object.methods
+  end
+end
+
+# http://quotedprintable.com/2007/6/9/irb-history-and-completion
+
+require "irb/ext/save-history"
+
+IRB.conf[:SAVE_HISTORY] = 1000
+IRB.conf[:HISTORY_FILE] = "#{ENV['HOME']}/.irb_history"

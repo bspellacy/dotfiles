@@ -162,7 +162,6 @@ echo "done"
 
 declare -a FILES_TO_SYMLINK=(
   'shell/shell_exports'
-  'shell/shell_functions'
   'shell/bash_profile'
   'shell/bashrc'
   'shell/zshrc'
@@ -171,6 +170,7 @@ declare -a FILES_TO_SYMLINK=(
   'shell/gemrc'
   'shell/inputrc'
   'shell/screenrc'
+  'shell/irbrc'
   'git/gitattributes'
   'git/gitconfig'
   'git/gitignore'

@@ -1,5 +1,6 @@
 # Path to your oh-my-zsh configuration.
 export ZSH=$HOME/.oh-my-zsh
+export PYENV_ROOT="$HOME/.pyenv"
 
 # Directories to be prepended to $PATH
 declare -a dirs_to_prepend
@@ -17,6 +18,8 @@ dirs_to_prepend=(
   "$(brew --prefix coreutils)/libexec/gnubin" # Add brew-installed GNU core utilities bin
   "$(brew --prefix)/share/npm/bin" # Add npm-installed package bi
   "/usr/local/bin"
+  "$PYENV_ROOT/bin"
+  "$PYENV_ROOT/shims"
 )
 
 # Explicitly configured $PATH
@@ -51,61 +54,44 @@ plugins=(fabric brew node npm history vagrant zsh-syntax-highlighting)
 
 # User configuration
 
-# Load the shell dotfiles
-for file in $HOME/.{shell_exports,shell_functions}; do
-  [ -r "$file" ] && [ -f "$file" ] && source "$file";
-done;
-unset file;
-
 if [ -f `brew --prefix`/etc/bash_completion ]; then
   . `brew --prefix`/etc/bash_completion
 fi
 
 source $ZSH/oh-my-zsh.sh
 
-# Source local extra (private) settings specific to machine if it exists
-[ -f ~/.zsh.local ] && source ~/.zsh.local
-
 # npm tab completion
 . <(npm completion)
-
 
 # Add prompt via https://github.com/sindresorhus/pure
 autoload -U promptinit; promptinit
 prompt pure
 
-#   Set Default Editor
-#   ------------------------------------------------------------
-  export EDITOR=/usr/bin/vim
+export EDITOR=/usr/bin/vim
 
 
-  export CLICOLOR=1
-  export LSCOLORS=GxFxCxDxBxegedabagaced
+export CLICOLOR=1
+export LSCOLORS=GxFxCxDxBxegedabagaced
 
+# Improved UNIX commands
 alias ls='ls -GFhl'
 alias cp='cp -iv'                           # Preferred 'cp' implementation
 alias mv='mv -iv'                           # Preferred 'mv' implementation
 alias mkdir='mkdir -pv'                     # Preferred 'mkdir' implementation
 alias ll='ls -FGlAhp'                       # Preferred 'ls' implementation
-alias less='less -FSRXc'                    # Preferred 'less' implementation
 cd() { builtin cd "$@"; ll; }               # Always list directory contents upon 'cd'
-alias ..='cd ../'                           # Go back 1 directory level
-alias ...='cd ../../'                       # Go back 2 directory levels
-alias .3='cd ../../../'                     # Go back 3 directory levels
-alias .4='cd ../../../../'                  # Go back 4 directory levels
-alias .5='cd ../../../../../'               # Go back 5 directory levels
-alias .6='cd ../../../../../../'            # Go back 6 directory levels
-alias edit='subl'                           # edit:         Opens any file in sublime editor
-alias f='open -a Finder ./'                 # f:            Opens current directory in MacOS Finder
+
+# Custom
+alias finder='open -a Finder ./'                 # f:            Opens current directory in MacOS Finder
 alias ~="cd ~"                              # ~:            Go Home
-alias c='clear'                             # c:            Clear terminal display
-alias which='type -all'                     # which:        Find executables
 alias path='echo -e ${PATH//:/\\n}'         # path:         Echo all executable Paths
 alias show_options='shopt'                  # Show_options: display bash options settings
-alias fix_stty='stty sane'                  # fix_stty:     Restore terminal settings when screwed up
 alias cic='set completion-ignore-case On'   # cic:          Make tab-completion case-insensitive
 mcd () { mkdir -p "$1" && cd "$1"; }        # mcd:          Makes new Dir and jumps inside
 trash () { command mv "$@" ~/.Trash ; }     # trash:        Moves a file to the MacOS trash
-ql () { qlmanage -p "$*" >& /dev/null; }    # ql:           Opens any file in MacOS Quicklook Preview
-alias DT='tee ~/Desktop/terminalOut.txt'    # DT:           Pipe content to file on MacOS Desktop
-alias python='$(pyenv which python)'        # Use pyenv's python
+
+# Bundler
+alias bi='bundle install'
+alias be='bundle exec ' # note the trailing space to trigger chaining
+alias bu='bundle update'
+alias bo='bundle open'
