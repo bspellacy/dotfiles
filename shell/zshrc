@@ -1,6 +1,8 @@
-# Path to your oh-my-zsh configuration.
+# Exports
 export ZSH=$HOME/.oh-my-zsh
 export PYENV_ROOT="$HOME/.pyenv"
+export GOPATH="$HOME/go"
+export UPDATE_ZSH_DAYS=13
 
 # Directories to be prepended to $PATH
 declare -a dirs_to_prepend
@@ -20,6 +22,7 @@ dirs_to_prepend=(
   "/usr/local/bin"
   "$PYENV_ROOT/bin"
   "$PYENV_ROOT/shims"
+  "$GOPATH/bin"
 )
 
 # Explicitly configured $PATH
@@ -36,7 +39,6 @@ done
 unset dirs_to_prepend
 
 export PATH
-export UPDATE_ZSH_DAYS=13
 
 # Use vim movement in terminal
 set -o vi
@@ -91,6 +93,7 @@ mcd () { mkdir -p "$1" && cd "$1"; }        # mcd:          Makes new Dir and ju
 trash () { command mv "$@" ~/.Trash ; }     # trash:        Moves a file to the MacOS trash
 
 # Bundler
+alias b='bundle '
 alias bi='bundle install'
 alias be='bundle exec ' # note the trailing space to trigger chaining
 alias bu='bundle update'

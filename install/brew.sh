@@ -35,6 +35,7 @@ apps=(
     git-extras
     gnu-sed --with-default-names
     grep --with-default-names
+    go
     homebrew/completions/brew-cask-completion
     homebrew/dupes/grep
     homebrew/dupes/openssh
