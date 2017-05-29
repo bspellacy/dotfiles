@@ -6,9 +6,10 @@
 
   # Branch
   br = branch
-  branch-name = rev-parse --abbrev-ref HEAD
-  branch-diff = diff master...HEAD
-  branch-files = "!git diff master...HEAD --name-status | sed '/^D/d ; s/^.\\s\\+//'"
+  brd = branch -D
+  br-name = rev-parse --abbrev-ref HEAD
+  br-diff = diff master...HEAD
+  br-files = "!git diff master...HEAD --name-status | sed '/^D/d ; s/^.\\s\\+//'"
 
   # Commit
   c = commit

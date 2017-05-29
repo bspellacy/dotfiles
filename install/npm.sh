@@ -48,7 +48,6 @@ packages=(
     webpack
     nodemon
     svgo
-    yo
     pure-prompt
 )
 
