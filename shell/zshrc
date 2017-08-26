@@ -41,7 +41,8 @@ unset dirs_to_prepend
 export PATH
 
 # Use vim movement in terminal
-set -o vi
+bindkey -v
+export KEYTIMEOUT=1
 
 # Uncomment the following line to disable auto-setting terminal title.
 DISABLE_AUTO_TITLE="true"
