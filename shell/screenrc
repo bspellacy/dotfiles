@@ -9,4 +9,4 @@ startup_message off
 
 # Increase the maximum number of lines contained
 # in the scrollback buffer (defaults to 100)
-defscrollback 20000
+defscrollback 2000
