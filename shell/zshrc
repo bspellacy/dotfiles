@@ -3,6 +3,7 @@ export ZSH=$HOME/.oh-my-zsh
 export PYENV_ROOT="$HOME/.pyenv"
 export GOPATH="$HOME/go"
 export UPDATE_ZSH_DAYS=13
+export NVM_DIR="$HOME/.nvm"
 
 # Directories to be prepended to $PATH
 declare -a dirs_to_prepend
@@ -24,6 +25,8 @@ dirs_to_prepend=(
   "$PYENV_ROOT/shims"
   "$GOPATH/bin"
 )
+
+. "/usr/local/opt/nvm/nvm.sh"
 
 # Explicitly configured $PATH
 PATH="/usr/bin:/bin:/usr/sbin:/sbin"
@@ -72,7 +75,6 @@ prompt pure
 
 export EDITOR=/usr/bin/vim
 
-
 export CLICOLOR=1
 export LSCOLORS=GxFxCxDxBxegedabagaced
 
@@ -99,3 +101,8 @@ alias bi='bundle install'
 alias be='bundle exec ' # note the trailing space to trigger chaining
 alias bu='bundle update'
 alias bo='bundle open'
+
+# Zeus
+alias z='zeus '
+alias zs='zeus start'
+alias zi='zeus init'
