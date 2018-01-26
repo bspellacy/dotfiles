@@ -1,0 +1,29 @@
+"*":
+  Zen:
+    gutter: true
+    softWrap: true
+    tabs: "multiple"
+    width: 120
+  "atom-ide-ui":
+    use:
+      "atom-ide-diagnostics-ui": false
+  core:
+    disabledPackages: [
+      "linter-haml"
+    ]
+    telemetryConsent: "no"
+    themes: [
+      "one-dark-ui"
+      "one-dark-dim-syntax"
+    ]
+  editor:
+    fontFamily: "Fira Code"
+    fontSize: 18
+    scrollPastEnd: true
+    showIndentGuide: true
+    showInvisibles: true
+    tabType: "soft"
+  "exception-reporting":
+    userId: "8e1c62ab-56b8-40c9-866a-c95b154ae301"
+  welcome:
+    showOnStartup: false
