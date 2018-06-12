@@ -24,6 +24,7 @@ dirs_to_prepend=(
   "$PYENV_ROOT/bin"
   "$PYENV_ROOT/shims"
   "$GOPATH/bin"
+  "$HOME/local/bin"
 )
 
 . "/usr/local/opt/nvm/nvm.sh"
@@ -106,3 +107,9 @@ alias bo='bundle open'
 alias z='zeus '
 alias zs='zeus start'
 alias zi='zeus init'
+
+# Rails
+alias ber='bundle exec rails '
+
+# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+export PATH="$PATH:$HOME/.rvm/bin"
