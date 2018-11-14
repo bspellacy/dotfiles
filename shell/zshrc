@@ -57,7 +57,7 @@ ENABLE_CORRECTION="false"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(fabric brew node npm history vagrant zsh-syntax-highlighting)
+plugins=(fabric brew node npm history vagrant sublime zsh-syntax-highlighting)
 
 # User configuration
 
@@ -74,7 +74,7 @@ source $ZSH/oh-my-zsh.sh
 autoload -U promptinit; promptinit
 prompt pure
 
-export EDITOR=/usr/bin/vim
+export EDITOR=/usr/local/bin/atom
 
 export CLICOLOR=1
 export LSCOLORS=GxFxCxDxBxegedabagaced
