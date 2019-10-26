@@ -66,27 +66,6 @@ set softtabstop=2   " In insert mode, tabs are 4 spaces
 "   .md files are markdown files
 autocmd BufNewFile,BufRead *.md setlocal ft=markdown
 
-" ---------------------- PLUGIN CONFIGURATION ----------------------
-" initiate Vundle
-let &runtimepath.=',$HOME/.vim/bundle/Vundle.vim'
-call vundle#begin()
-" let Vundle manage Vundle, required
-Plugin 'gmarik/Vundle.vim'
-
-" start plugin defintion
-Plugin 'scrooloose/nerdtree'
-Plugin 'vim-scripts/L9'
-Plugin 'vim-scripts/FuzzyFinder'
-Plugin 'itchyny/lightline.vim'
-Plugin 'tpope/vim-surround'
-Plugin 'kchmck/vim-coffee-script'
-Plugin 'skammer/vim-css-color'
-Plugin 'hail2u/vim-css3-syntax'
-Plugin 'reedes/vim-colors-pencil'
-
-" End plugin definition
-
-call vundle#end()            " Required for vundle
 
 " Start NERDTree on start-up and focus active window
 autocmd VimEnter * NERDTree
@@ -95,9 +74,6 @@ autocmd VimEnter * wincmd p
 " Map FuzzyFinder
 noremap <leader>b :FufBuffer<cr>
 noremap <leader>f :FufFile<cr>
-
-" Enable color scheme
-colorscheme pencil
 
 " Line Numbers
 set number relativenumber

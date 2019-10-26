@@ -164,7 +164,6 @@ declare -a FILES_TO_SYMLINK=(
   'shell/shell_exports'
   'shell/bash_profile'
   'shell/bashrc'
-  'shell/zshrc'
   'shell/ackrc'
   'shell/curlrc'
   'shell/gemrc'
@@ -194,8 +193,6 @@ main() {
   local i=''
   local sourceFile=''
   local targetFile=''
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   for i in ${FILES_TO_SYMLINK[@]}; do
 
@@ -239,51 +236,6 @@ main() {
   done
 
   unset BINARIES
-
-  # Symlink online-check.sh
-  ln -fs $HOME/dotfiles/lib/online-check.sh $HOME/online-check.sh
-
-  # Write out current crontab
-  crontab -l > mycron
-  # Echo new cron into cron file
-  echo "* * * * * ~/online-check.sh" >> mycron
-  # Install new cron file
-  crontab mycron
-  rm mycron
-
-}
-
-install_zsh () {
-  # Test to see if zshell is installed.  If it is:
-  if [ -f /bin/zsh -o -f /usr/bin/zsh ]; then
-    # Install Oh My Zsh if it isn't already present
-    if [[ ! -d $dir/oh-my-zsh/ ]]; then
-      sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-    fi
-    # Set the default shell to zsh if it isn't currently set to zsh
-    if [[ ! $(echo $SHELL) == $(which zsh) ]]; then
-      chsh -s $(which zsh)
-    fi
-  else
-    # If zsh isn't installed, get the platform of the current machine
-    platform=$(uname);
-    # If the platform is Linux, try an apt-get to install zsh and then recurse
-    if [[ $platform == 'Linux' ]]; then
-      if [[ -f /etc/redhat-release ]]; then
-        sudo yum install zsh
-        install_zsh
-      fi
-      if [[ -f /etc/debian_version ]]; then
-        sudo apt-get install zsh
-        install_zsh
-      fi
-    # If the platform is OS X, tell the user to install zsh :)
-    elif [[ $platform == 'Darwin' ]]; then
-      echo "We'll install zsh, then re-run this script!"
-      brew install zsh
-      exit
-    fi
-  fi
 }
 
 # Package managers & packages
@@ -309,13 +261,6 @@ main
 #apm list --installed --bare - get a list of installed packages
 #apm install --packages-file $HOME/.atom/packages.list
 
-###############################################################################
-# Zsh                                                                         #
-###############################################################################
-
-# Install Zsh settings
-ln -s ~/dotfiles/zsh/themes/nick.zsh-theme $HOME/.oh-my-zsh/themes
-
 
 ###############################################################################
 # Terminal & iTerm 2                                                          #
@@ -329,6 +274,3 @@ open "${HOME}/code/dotfiles/iterm/themes/one-dark.itermcolors"
 
 # Don’t display the annoying prompt when quitting iTerm
 defaults write com.googlecode.iterm2 PromptOnQuit -bool false
-
-# Reload zsh settings
-source ~/.zshrc
