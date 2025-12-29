@@ -121,6 +121,21 @@ ensure_mise_activated() {
   fi
 }
 
+link_agents_configuration() {
+  # --- Global agent instructions (Codex + Claude) ---
+
+  mkdir -p "$HOME/.codex" "$HOME/.claude"
+
+ # canonical source file in your dotfiles repo
+  AGENTS_SRC="${DOTFILES_DIR}/ai/AGENTS.global.md"
+
+  # Codex reads ~/.codex/AGENTS.md (unless overridden)
+  ln -sfn "$AGENTS_SRC" "$HOME/.codex/AGENTS.md"
+
+  # Claude Code reads ~/.claude/CLAUDE.md
+  ln -sfn "$AGENTS_SRC" "$HOME/.claude/CLAUDE.md"
+}
+
 main() {
   ensure_xcode_clt
   ensure_homebrew
@@ -129,6 +144,7 @@ main() {
   install_dotfiles
   run_macos_defaults
   ensure_mise_activated
+  link_agents_configuration
 
   log "Done."
   echo "Restart your terminal (or run: exec zsh)."
