@@ -136,11 +136,17 @@ link_agents_configuration() {
   ln -sfn "$AGENTS_SRC" "$HOME/.claude/CLAUDE.md"
 }
 
+install_bun() {
+  log "Installing Bun..."
+  curl -fsSL https://bun.sh/install | bash
+}
+
 main() {
   ensure_xcode_clt
   ensure_homebrew
   brew_bundle
   ensure_zsh_default_shell
+  install_bun
   install_dotfiles
   run_macos_defaults
   ensure_mise_activated
