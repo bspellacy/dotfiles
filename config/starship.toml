@@ -4,7 +4,7 @@ add_newline = false
 symbol = " "
 
 [nodejs]
-format = "via [$symbol($version )]($style)"
+format = "via [$symbol($version)]($style)"
 
 [ruby]
-format = "via [$symbol($version )]($style)"
+format = "via [$symbol($version)]($style)"
