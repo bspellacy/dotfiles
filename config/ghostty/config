@@ -1,0 +1,17 @@
+# Ghostty loads from: $XDG_CONFIG_HOME/ghostty/config (defaults to ~/.config/ghostty/config) https://ghostty.org/docs/config?utm_source=chatgpt.com
+
+command = /bin/zsh
+working-directory = home
+
+# Quality-of-life
+copy-on-select = clipboard
+clipboard-read = allow
+clipboard-write = allow
+keybind = shift+enter=text:\n
+
+# Looks (tweak as you like)
+macos-titlebar-style = native
+background-opacity = 0.92
+font-family = "Fira Code"
+cursor-style = block
+font-size = 16
