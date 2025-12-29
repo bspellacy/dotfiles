@@ -1,0 +1,2 @@
+# Keep PATH tweaks minimal here; interactive config belongs in .zshrc
+export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
