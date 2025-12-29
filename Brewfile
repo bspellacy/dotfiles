@@ -2,7 +2,6 @@ tap "homebrew/bundle"
 
 brew "git"
 brew "gh"
-brew "gpg-suite"
 
 brew "zsh"
 brew "starship"

@@ -1,276 +1,137 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-# https://github.com/kaicataldo/dotfiles/blob/master/bin/install.sh
+DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BACKUP_DIR="${HOME}/.dotfiles_backup/$(date +%Y%m%d_%H%M%S)"
 
-# This symlinks all the dotfiles (and .atom/) to ~/
-# It also symlinks ~/bin for easy updating
+is_command() { command -v "$1" >/dev/null 2>&1; }
 
-# This is safe to run multiple times and will prompt you about anything unclear
+log() { printf "\n==> %s\n" "$1"; }
 
-
-#
-# Utils
-#
-
-answer_is_yes() {
-  [[ "$REPLY" =~ ^[Yy]$ ]] \
-    && return 0 \
-    || return 1
+ensure_xcode_clt() {
+  if xcode-select -p >/dev/null 2>&1; then
+    return 0
+  fi
+  log "Installing Xcode Command Line Tools..."
+  xcode-select --install || true
+  log "If a GUI prompt appeared, finish it, then re-run ./install.sh"
+  exit 0
 }
 
-ask() {
-  print_question "$1"
-  read
+ensure_homebrew() {
+  if is_command brew; then return 0; fi
+  log "Installing Homebrew..."
+  NONINTERACTIVE=1 /bin/bash -c \
+    "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+  # shellenv for Apple Silicon vs Intel
+  if [[ -x /opt/homebrew/bin/brew ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  elif [[ -x /usr/local/bin/brew ]]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+  fi
 }
 
-ask_for_confirmation() {
-  print_question "$1 (y/n) "
-  read -n 1
-  printf "\n"
+brew_bundle() {
+  log "Installing/updating Homebrew bundle..."
+  brew update
+  brew bundle --file "${DOTFILES_DIR}/Brewfile"
 }
 
-ask_for_sudo() {
-
-  # Ask for the administrator password upfront
-  sudo -v
-
-  # Update existing `sudo` time stamp until this script has finished
-  # https://gist.github.com/cowboy/3118588
-  while true; do
-    sudo -n true
-    sleep 60
-    kill -0 "$$" || exit
-  done &> /dev/null &
-
+backup_path_if_conflict() {
+  local target="$1"
+  if [[ -e "$target" || -L "$target" ]]; then
+    mkdir -p "$BACKUP_DIR"
+    log "Backing up existing: $target -> $BACKUP_DIR"
+    mv "$target" "$BACKUP_DIR/"
+  fi
 }
 
-cmd_exists() {
-  [ -x "$(command -v "$1")" ] \
-    && printf 0 \
-    || printf 1
-}
+link_file() {
+  local src="$1"
+  local dest="$2"
+  local dest_dir
+  dest_dir="$(dirname "$dest")"
 
-execute() {
-  $1 &> /dev/null
-  print_result $? "${2:-$1}"
-}
+  mkdir -p "$dest_dir"
 
-get_answer() {
-  printf "$REPLY"
-}
-
-get_os() {
-
-  declare -r OS_NAME="$(uname -s)"
-  local os=""
-
-  if [ "$OS_NAME" == "Darwin" ]; then
-    os="osx"
-  elif [ "$OS_NAME" == "Linux" ] && [ -e "/etc/lsb-release" ]; then
-    os="ubuntu"
+  # If already linked correctly, do nothing (idempotent)
+  if [[ -L "$dest" ]]; then
+    local current
+    current="$(readlink "$dest")"
+    if [[ "$current" == "$src" ]]; then
+      return 0
+    fi
   fi
 
-  printf "%s" "$os"
+  # If a real file exists, back it up once
+  if [[ -e "$dest" && ! -L "$dest" ]]; then
+    backup_path_if_conflict "$dest"
+  fi
 
+  ln -sfn "$src" "$dest"
 }
 
-is_git_repository() {
-  [ "$(git rev-parse &>/dev/null; printf $?)" -eq 0 ] \
-    && return 0 \
-    || return 1
-}
+ensure_zsh_default_shell() {
+  # Ensure brew zsh is in /etc/shells
+  local brew_zsh=""
+  if [[ -x /opt/homebrew/bin/zsh ]]; then brew_zsh="/opt/homebrew/bin/zsh"; fi
+  if [[ -x /usr/local/bin/zsh ]]; then brew_zsh="/usr/local/bin/zsh"; fi
 
-mkd() {
-  if [ -n "$1" ]; then
-    if [ -e "$1" ]; then
-      if [ ! -d "$1" ]; then
-        print_error "$1 - a file with the same name already exists!"
-      else
-        print_success "$1"
-      fi
-    else
-      execute "mkdir -p $1" "$1"
+  if [[ -n "$brew_zsh" ]]; then
+    if ! grep -q "$brew_zsh" /etc/shells; then
+      log "Adding Homebrew zsh to /etc/shells (requires sudo)..."
+      echo "$brew_zsh" | sudo tee -a /etc/shells >/dev/null
+    fi
+    if [[ "$SHELL" != "$brew_zsh" ]]; then
+      log "Setting default shell to Homebrew zsh (requires sudo)..."
+      sudo chsh -s "$brew_zsh" "$USER" || true
     fi
   fi
 }
 
-print_error() {
-  # Print output in red
-  printf "\e[0;31m  [✖] $1 $2\e[0m\n"
+install_dotfiles() {
+  log "Linking dotfiles..."
+  # Zsh
+  link_file "${DOTFILES_DIR}/zsh/zshenv"    "${HOME}/.zshenv"
+  link_file "${DOTFILES_DIR}/zsh/zprofile"  "${HOME}/.zprofile"
+  link_file "${DOTFILES_DIR}/zsh/zshrc"     "${HOME}/.zshrc"
+
+  # Git
+  link_file "${DOTFILES_DIR}/git/gitconfig"        "${HOME}/.gitconfig"
+  link_file "${DOTFILES_DIR}/git/gitignore_global" "${HOME}/.gitignore_global"
+
+  # Starship + Ghostty (XDG config)
+  link_file "${DOTFILES_DIR}/config/starship.toml" "${HOME}/.config/starship.toml"
+  link_file "${DOTFILES_DIR}/config/ghostty/config" "${HOME}/.config/ghostty/config"
+
+  # mise toolchain config
+  link_file "${DOTFILES_DIR}/toolchains/mise.toml" "${HOME}/.config/mise/config.toml"
 }
 
-print_info() {
-  # Print output in purple
-  printf "\n\e[0;35m $1\e[0m\n\n"
+run_macos_defaults() {
+  log "Applying macOS defaults (safe to re-run)..."
+  bash "${DOTFILES_DIR}/scripts/macos_defaults.sh"
 }
 
-print_question() {
-  # Print output in yellow
-  printf "\e[0;33m  [?] $1\e[0m"
+ensure_mise_activated() {
+  # We’ll rely on .zshrc to activate it; this just ensures it exists.
+  if is_command mise; then
+    mise --version >/dev/null 2>&1 || true
+  fi
 }
-
-print_result() {
-  [ $1 -eq 0 ] \
-    && print_success "$2" \
-    || print_error "$2"
-
-  [ "$3" == "true" ] && [ $1 -ne 0 ] \
-    && exit
-}
-
-print_success() {
-  # Print output in green
-  printf "\e[0;32m  [✔] $1\e[0m\n"
-}
-
-# Warn user this script will overwrite current dotfiles
-while true; do
-  read -p "Warning: this will overwrite your current dotfiles. Continue? [y/n] " yn
-  case $yn in
-    [Yy]* ) break;;
-    [Nn]* ) exit;;
-    * ) echo "Please answer yes or no.";;
-  esac
-done
-
-# Get the dotfiles directory's absolute path
-SCRIPT_DIR="$(cd "$(dirname "$0")"; pwd -P)"
-DOTFILES_DIR="$(dirname "$SCRIPT_DIR")"
-
-
-dir=~/dotfiles                        # dotfiles directory
-dir_backup=~/dotfiles_old             # old dotfiles backup directory
-
-# Get current dir (so run this script from anywhere)
-
-export DOTFILES_DIR
-DOTFILES_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
-# Create dotfiles_old in homedir
-echo -n "Creating $dir_backup for backup of any existing dotfiles in ~..."
-mkdir -p $dir_backup
-echo "done"
-
-# Change to the dotfiles directory
-echo -n "Changing to the $dir directory..."
-cd $dir
-echo "done"
-
-#
-# Actual symlink stuff
-#
-
-declare -a FILES_TO_SYMLINK=(
-  'shell/shell_exports'
-  'shell/bash_profile'
-  'shell/bashrc'
-  'shell/ackrc'
-  'shell/curlrc'
-  'shell/gemrc'
-  'shell/inputrc'
-  'shell/screenrc'
-  'shell/irbrc'
-  'shell/vimrc'
-  'git/gitattributes'
-  'git/gitconfig'
-  'git/gitignore'
-)
-
-# FILES_TO_SYMLINK="$FILES_TO_SYMLINK .vim bin" # add in vim and the binaries
-
-# Move any existing dotfiles in homedir to dotfiles_old directory, then create symlinks from the homedir to any files in the ~/dotfiles directory specified in $files
-
-for i in ${FILES_TO_SYMLINK[@]}; do
-  echo "Moving any existing dotfiles from ~ to $dir_backup"
-  mv ~/.${i##*/} ~/dotfiles_old/
-done
-
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 main() {
+  ensure_xcode_clt
+  ensure_homebrew
+  brew_bundle
+  ensure_zsh_default_shell
+  install_dotfiles
+  run_macos_defaults
+  ensure_mise_activated
 
-  local i=''
-  local sourceFile=''
-  local targetFile=''
-
-  for i in ${FILES_TO_SYMLINK[@]}; do
-
-    sourceFile="$(pwd)/$i"
-    targetFile="$HOME/.$(printf "%s" "$i" | sed "s/.*\/\(.*\)/\1/g")"
-
-    if [ ! -e "$targetFile" ]; then
-      execute "ln -fs $sourceFile $targetFile" "$targetFile → $sourceFile"
-    elif [ "$(readlink "$targetFile")" == "$sourceFile" ]; then
-      print_success "$targetFile → $sourceFile"
-    else
-      ask_for_confirmation "'$targetFile' already exists, do you want to overwrite it?"
-      if answer_is_yes; then
-        rm -rf "$targetFile"
-        execute "ln -fs $sourceFile $targetFile" "$targetFile → $sourceFile"
-      else
-        print_error "$targetFile → $sourceFile"
-      fi
-    fi
-
-  done
-
-  unset FILES_TO_SYMLINK
-
-  # Copy binaries
-  ln -fs $HOME/dotfiles/bin $HOME
-
-  declare -a BINARIES=(
-    'batcharge.py'
-    'crlf'
-    'dups'
-    'git-delete-merged-branches'
-    'passive'
-    'proofread'
-    'ssh-key'
-  )
-
-  for i in ${BINARIES[@]}; do
-    echo "Changing access permissions for binary script :: ${i##*/}"
-    chmod +rwx $HOME/bin/${i##*/}
-  done
-
-  unset BINARIES
+  log "Done."
+  echo "Restart your terminal (or run: exec zsh)."
 }
 
-# Package managers & packages
-
-# . "$DOTFILES_DIR/install/brew.sh"
-# . "$DOTFILES_DIR/install/npm.sh"
-
-# if [ "$(uname)" == "Darwin" ]; then
-    # . "$DOTFILES_DIR/install/brew-cask.sh"
-# fi
-
-main
-# install_zsh
-
-###############################################################################
-# Atom                                                                        #
-###############################################################################
-
-# Copy over Atom configs
-#cp -r atom/packages.list $HOME/.atom
-
-# Install community packages
-#apm list --installed --bare - get a list of installed packages
-#apm install --packages-file $HOME/.atom/packages.list
-
-
-###############################################################################
-# Terminal & iTerm 2                                                          #
-###############################################################################
-
-# Only use UTF-8 in Terminal.app
-defaults write com.apple.terminal StringEncodings -array 4
-
-# Install one-dark to match Atom
-open "${HOME}/code/dotfiles/iterm/themes/one-dark.itermcolors"
-
-# Don’t display the annoying prompt when quitting iTerm
-defaults write com.googlecode.iterm2 PromptOnQuit -bool false
+main "$@"
