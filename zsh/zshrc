@@ -45,3 +45,9 @@ fi
 # ---- Aliases/Functions ----
 source "$HOME/.config/dotfiles/aliases.zsh" 2>/dev/null || true
 source "$HOME/.config/dotfiles/functions.zsh" 2>/dev/null || true
+# bun completions
+[ -s "/Users/brennan/.bun/_bun" ] && source "/Users/brennan/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
