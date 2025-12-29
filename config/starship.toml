@@ -1,0 +1,10 @@
+add_newline = false
+
+[git_branch]
+symbol = " "
+
+[nodejs]
+format = "via [$symbol($version )]($style)"
+
+[ruby]
+format = "via [$symbol($version )]($style)"

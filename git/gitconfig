@@ -83,7 +83,7 @@
   editor = vim
   abbrev = 12
   attributesfile = ~/.gitattributes
-  excludesfile = ~/.gitignore
+  excludesfile = ~/.gitignore_global
   autocrlf = input
   mergeoptions = --no-edit
   ignorecase = false
@@ -115,8 +115,16 @@
 
 [fetch]
   prune = true
+
 [user]
 	name = Brennan Spellacy
 	email = brennanspellacy@gmail.com
+
 [credential]
 	helper = osxkeychain
+
+[pull]
+  rebase = true
+
+[rebase]
+  autoStash = true
