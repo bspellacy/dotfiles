@@ -126,11 +126,12 @@ link_agents_configuration() {
 
   mkdir -p "$HOME/.codex" "$HOME/.claude"
 
- # canonical source file in your dotfiles repo
+  # canonical source file in your dotfiles repo
   AGENTS_SRC="${DOTFILES_DIR}/ai/AGENTS.global.md"
 
   # Codex reads ~/.codex/AGENTS.md (unless overridden)
   ln -sfn "$AGENTS_SRC" "$HOME/.codex/AGENTS.md"
+  ln -sfn "${DOTFILES_DIR}/ai/codex.config.toml" "$HOME/.codex/config.toml"
 
   # Claude Code reads ~/.claude/CLAUDE.md
   ln -sfn "$AGENTS_SRC" "$HOME/.claude/CLAUDE.md"
