@@ -123,6 +123,16 @@
 [credential]
 	helper = osxkeychain
 
+[credential "https://github.com"]
+	helper =
+	helper = !gh auth git-credential
+	useHttpPath = true
+
+[credential "https://gist.github.com"]
+	helper =
+	helper = !gh auth git-credential
+	useHttpPath = true
+
 [pull]
   rebase = true
 

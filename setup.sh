@@ -8,6 +8,13 @@ is_command() { command -v "$1" >/dev/null 2>&1; }
 
 log() { printf "\n==> %s\n" "$1"; }
 
+confirm() {
+  local prompt="${1:-Continue?}"
+  local reply=""
+  read -r -p "${prompt} [Y/n] " reply
+  [[ -z "$reply" || "$reply" =~ ^([Yy]([Ee][Ss])?)$ ]]
+}
+
 ensure_xcode_clt() {
   if xcode-select -p >/dev/null 2>&1; then
     return 0
@@ -94,7 +101,9 @@ install_dotfiles() {
   log "Linking dotfiles..."
   # Zsh
   link_file "${DOTFILES_DIR}/zsh/zshenv"    "${HOME}/.zshenv"
-  link_file "${DOTFILES_DIR}/zsh/zprofile"  "${HOME}/.zprofile"
+  if [[ -f "${DOTFILES_DIR}/zsh/zprofile" ]]; then
+    link_file "${DOTFILES_DIR}/zsh/zprofile"  "${HOME}/.zprofile"
+  fi
   link_file "${DOTFILES_DIR}/zsh/zshrc"     "${HOME}/.zshrc"
 
   # Git
@@ -107,6 +116,48 @@ install_dotfiles() {
 
   # mise toolchain config
   link_file "${DOTFILES_DIR}/toolchains/mise.toml" "${HOME}/.config/mise/config.toml"
+}
+
+ensure_github_auth() {
+  if ! is_command gh; then
+    return 0
+  fi
+
+  if gh auth status --hostname github.com >/dev/null 2>&1; then
+    return 0
+  fi
+
+  if [[ ! -t 0 ]]; then
+    log "GitHub auth not configured (non-interactive shell). Run: gh auth login"
+    return 0
+  fi
+
+  log "GitHub auth (gh) is required for git/GitHub operations."
+  if ! confirm "Authenticate GitHub now with gh?"; then
+    log "Skipping GitHub auth. You can run later: gh auth login"
+    return 0
+  fi
+
+  if [[ -n "${GH_TOKEN:-}" ]]; then
+    gh auth login --hostname github.com --git-protocol https --with-token <<<"${GH_TOKEN}" || {
+      log "GitHub auth failed or was cancelled. You can run later: gh auth login"
+      return 0
+    }
+    return 0
+  fi
+
+  if [[ -n "${GITHUB_TOKEN:-}" ]]; then
+    gh auth login --hostname github.com --git-protocol https --with-token <<<"${GITHUB_TOKEN}" || {
+      log "GitHub auth failed or was cancelled. You can run later: gh auth login"
+      return 0
+    }
+    return 0
+  fi
+
+  gh auth login --hostname github.com --git-protocol https || {
+    log "GitHub auth failed or was cancelled. You can run later: gh auth login"
+    return 0
+  }
 }
 
 run_macos_defaults() {
@@ -146,6 +197,7 @@ main() {
   ensure_xcode_clt
   ensure_homebrew
   brew_bundle
+  ensure_github_auth
   ensure_zsh_default_shell
   install_bun
   install_dotfiles

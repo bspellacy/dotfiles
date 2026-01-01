@@ -32,6 +32,12 @@
 
 ## Git hygiene
 - Keep commits scoped and message clearly.
+- Confirm scope before committing: check `git status -sb` and `git diff`.
+- Prefer `git add -p` and small, reviewable commits.
+- Don’t push, force-push, or merge PRs without explicit confirmation.
+- If a force push is truly required, use `--force-with-lease` and explain why.
+- Prefer feature branches + PRs; don’t commit directly to the default branch unless asked.
+- Prefer `gh` for GitHub operations (PRs, checks, releases) and confirm before creating/updating PRs.
 - Don’t change formatting across unrelated files.
 - If you touch config/tooling, explain the impact and how to revert.
 
