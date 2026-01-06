@@ -21,5 +21,7 @@ brew "openssl@3"
 brew "readline"
 brew "libyaml"
 
+cask "font-hack-nerd-font"
+
 cask "ghostty"
 cask "zed"

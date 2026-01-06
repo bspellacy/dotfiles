@@ -4,3 +4,4 @@ ruby = "3.3"   # adjust if you want 3.4, etc.
 
 [settings]
 experimental = true
+idiomatic_version_file_enable_tools = ["ruby"]

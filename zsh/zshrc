@@ -43,6 +43,11 @@ if [[ -f "$(brew --prefix)/opt/fzf/shell/key-bindings.zsh" ]]; then
 fi
 
 # ---- Aliases/Functions ----
+DOTFILES_ZSH_DIR="${${(%):-%N}:A:h}"
+source "${DOTFILES_ZSH_DIR}/aliases.zsh" 2>/dev/null || true
+source "${DOTFILES_ZSH_DIR}/functions.zsh" 2>/dev/null || true
+
+# Local (non-repo) overrides
 source "$HOME/.config/dotfiles/aliases.zsh" 2>/dev/null || true
 source "$HOME/.config/dotfiles/functions.zsh" 2>/dev/null || true
 # bun completions
