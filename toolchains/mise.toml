@@ -5,3 +5,7 @@ ruby = "3.3"   # adjust if you want 3.4, etc.
 [settings]
 experimental = true
 idiomatic_version_file_enable_tools = ["ruby"]
+
+[env]
+SSL_CERT_FILE = "/opt/homebrew/etc/ca-certificates/cert.pem"
+PORTABLE_RUBY_SSL_CERT_FILE = "/opt/homebrew/etc/ca-certificates/cert.pem"
