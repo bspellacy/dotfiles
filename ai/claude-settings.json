@@ -1,6 +1,29 @@
 {
   "permissions": {
-    "allow": [],
+    "allow": [
+      "Bash(git status:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(git branch:*)",
+      "Bash(git show:*)",
+      "Bash(git ls-files:*)",
+      "Bash(ls:*)",
+      "Bash(which:*)",
+      "Bash(node --version:*)",
+      "Bash(npm --version:*)",
+      "Bash(ruby --version:*)",
+      "Bash(bundle --version:*)",
+      "Bash(npm list:*)",
+      "Bash(bundle list:*)",
+      "Bash(bundle info:*)",
+      "Bash(bundle install:*)",
+      "Bash(bundle update:*)",
+      "Read",
+      "Glob",
+      "Grep",
+      "WebFetch",
+      "WebSearch"
+    ],
     "deny": []
   },
   "env": {}
