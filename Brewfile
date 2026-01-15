@@ -2,6 +2,7 @@ tap "homebrew/bundle"
 
 brew "git"
 brew "gh"
+brew "opencode"
 
 brew "zsh"
 brew "starship"

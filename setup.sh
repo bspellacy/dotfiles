@@ -184,6 +184,9 @@ link_agents_configuration() {
   ln -sfn "$AGENTS_SRC" "$HOME/.codex/AGENTS.md"
   ln -sfn "${DOTFILES_DIR}/ai/codex.config.toml" "$HOME/.codex/config.toml"
 
+  # OpenCode reads ~/.config/opencode/.opencode.json
+  link_file "${DOTFILES_DIR}/ai/opencode.json" "$HOME/.config/opencode/.opencode.json"
+
   # Claude Code reads ~/.claude/CLAUDE.md
   ln -sfn "$AGENTS_SRC" "$HOME/.claude/CLAUDE.md"
 }

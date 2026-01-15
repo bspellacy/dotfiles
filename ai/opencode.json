@@ -1,0 +1,7 @@
+{
+  "shell": {
+    "path": "/bin/zsh",
+    "args": ["-l"]
+  },
+  "autoCompact": true
+}

@@ -11,4 +11,4 @@
 - `config/` — XDG-style app configs (e.g. `starship.toml`, `ghostty/config`).
 - `toolchains/` — tool/runtime config (currently `mise.toml`).
 - `scripts/` — one-off scripts (e.g. macOS defaults).
-- `ai/` — agent instructions and Codex config (`AGENTS.global.md`, `codex.config.toml`).
+- `ai/` — agent instructions and configs (`AGENTS.global.md`, `codex.config.toml`, `opencode.json`).
