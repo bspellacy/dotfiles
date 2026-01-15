@@ -189,6 +189,9 @@ link_agents_configuration() {
 
   # Claude Code reads ~/.claude/CLAUDE.md
   ln -sfn "$AGENTS_SRC" "$HOME/.claude/CLAUDE.md"
+
+  # Claude Code user settings
+  link_file "${DOTFILES_DIR}/ai/claude-settings.json" "$HOME/.claude/settings.json"
 }
 
 install_bun() {

@@ -31,14 +31,27 @@
 - Add/adjust specs for behavior changes.
 
 ## Git hygiene
+
+### Branch naming
+- Always prefix branches with `bs/` (e.g., `bs/add-user-auth`, `bs/fix-login-bug`).
+- Use kebab-case for branch names: `bs/feature-name` not `bs/feature_name` or `bs/featureName`.
+- Keep branch names short but descriptive (3-5 words max).
+
+### Commits
 - Keep commits scoped and message clearly.
 - Confirm scope before committing: check `git status -sb` and `git diff`.
 - Prefer `git add -p` and small, reviewable commits.
-- Don’t push, force-push, or merge PRs without explicit confirmation.
+- Write commit messages in imperative mood: "Add feature" not "Added feature".
+- Don't change formatting across unrelated files.
+
+### Pushing and PRs
+- Don't push, force-push, or merge PRs without explicit confirmation.
 - If a force push is truly required, use `--force-with-lease` and explain why.
-- Prefer feature branches + PRs; don’t commit directly to the default branch unless asked.
+- Prefer feature branches + PRs; don't commit directly to the default branch unless asked.
 - Prefer `gh` for GitHub operations (PRs, checks, releases) and confirm before creating/updating PRs.
-- Don’t change formatting across unrelated files.
+- Rebase feature branches on main before opening PR to keep history clean.
+
+### Config changes
 - If you touch config/tooling, explain the impact and how to revert.
 
 ## “Ask before doing”
