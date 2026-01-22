@@ -1,6 +1,6 @@
 # Keep PATH tweaks minimal here; interactive config belongs in .zshrc
 # Include common Homebrew locations so non-interactive zsh can find mise.
-export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+export PATH="$HOME/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
 
 # mise in non-interactive shells (scripts, `zsh -c`, etc.)
 if [[ ! -o interactive ]] && command -v mise >/dev/null 2>&1; then
