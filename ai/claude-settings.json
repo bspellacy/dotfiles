@@ -18,6 +18,25 @@
       "Bash(bundle info:*)",
       "Bash(bundle install:*)",
       "Bash(bundle update:*)",
+      "Bash(bundle exec rails routes:*)",
+      "Bash(bundle exec rails console --help:*)",
+      "Bash(bundle exec rspec --dry-run:*)",
+      "Bash(bundle exec rubocop --list-target-files:*)",
+      "Bash(npm run:*)",
+      "Bash(npm test -- --listTests:*)",
+      "Bash(npm run lint -- --list-files:*)",
+      "Bash(yarn run:*)",
+      "Bash(pnpm run:*)",
+      "Bash(cat:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(grep:*)",
+      "Bash(find:*)",
+      "Bash(wc:*)",
+      "Bash(sort:*)",
+      "Bash(uniq:*)",
+      "Bash(awk:*)",
+      "Bash(sed:*)",
       "Read",
       "Glob",
       "Grep",
@@ -26,5 +45,8 @@
     ],
     "deny": []
   },
-  "env": {}
+  "env": {},
+  "attribution": {
+    "enabled": false
+  }
 }
