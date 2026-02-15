@@ -1,6 +1,6 @@
 [tools]
 node = "lts"
-ruby = "3.3"   # adjust if you want 3.4, etc.
+ruby = "latest"
 
 [settings]
 experimental = true

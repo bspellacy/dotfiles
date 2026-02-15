@@ -1,4 +1,9 @@
 {
+  "env": {},
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
   "permissions": {
     "allow": [
       "Bash(git status:*)",
@@ -45,8 +50,6 @@
     ],
     "deny": []
   },
-  "env": {},
-  "attribution": {
-    "enabled": false
-  }
+  "effortLevel": "medium",
+  "model": "opus"
 }
