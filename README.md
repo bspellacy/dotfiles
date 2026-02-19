@@ -12,3 +12,8 @@
 - `toolchains/` — tool/runtime config (currently `mise.toml`).
 - `scripts/` — one-off scripts (e.g. macOS defaults).
 - `ai/` — agent instructions and configs (`AGENTS.global.md`, `codex.config.toml`, `opencode.json`).
+
+## Helpers
+
+- `uq` — unquarantine a Homebrew-installed app or binary.
+  - Examples: `uq chromedriver` or `uq /Applications/SomeApp.app`
