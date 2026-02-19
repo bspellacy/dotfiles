@@ -50,6 +50,9 @@
     ],
     "deny": []
   },
-  "effortLevel": "medium",
-  "model": "opus"
+  "model": "opus",
+  "enabledPlugins": {
+    "commit-commands@claude-plugins-official": true
+  },
+  "effortLevel": "medium"
 }
