@@ -133,6 +133,9 @@
 	helper = !gh auth git-credential
 	useHttpPath = true
 
+[init]
+  defaultBranch = main
+
 [pull]
   rebase = true
 
