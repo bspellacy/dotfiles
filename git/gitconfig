@@ -133,6 +133,18 @@
 	helper = !gh auth git-credential
 	useHttpPath = true
 
+[gpg]
+  format = ssh
+
+[gpg "ssh"]
+  allowedSignersFile = ~/.ssh/allowed_signers
+
+[commit]
+  gpgsign = true
+
+[tag]
+  gpgsign = true
+
 [init]
   defaultBranch = main
 

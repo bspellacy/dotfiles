@@ -123,7 +123,20 @@ ensure_github_auth() {
     return 0
   fi
 
+  local required_scopes="admin:ssh_signing_key"
+
+  # Already authenticated — just ensure we have the required scopes
   if gh auth status --hostname github.com >/dev/null 2>&1; then
+    local token_scopes
+    token_scopes="$(gh auth status --hostname github.com 2>&1 | grep "Token scopes" || true)"
+    if echo "$token_scopes" | grep -q "$required_scopes"; then
+      return 0
+    fi
+    log "GitHub token missing scope: ${required_scopes}. Refreshing..."
+    gh auth refresh -h github.com -s "$required_scopes" || {
+      log "Scope refresh failed. Run manually: gh auth refresh -h github.com -s ${required_scopes}"
+      return 0
+    }
     return 0
   fi
 
@@ -154,7 +167,7 @@ ensure_github_auth() {
     return 0
   fi
 
-  gh auth login --hostname github.com --git-protocol https || {
+  gh auth login --hostname github.com --git-protocol https -s "$required_scopes" || {
     log "GitHub auth failed or was cancelled. You can run later: gh auth login"
     return 0
   }
@@ -194,6 +207,45 @@ link_agents_configuration() {
   link_file "${DOTFILES_DIR}/ai/claude-settings.json" "$HOME/.claude/settings.json"
 }
 
+ensure_ssh_signing() {
+  local key_path="${HOME}/.ssh/id_ed25519"
+  local email
+  email="$(git config user.email 2>/dev/null || echo "brennanspellacy@gmail.com")"
+
+  # Generate SSH key if it doesn't exist
+  if [[ ! -f "$key_path" ]]; then
+    log "Generating SSH key for commit signing..."
+    mkdir -p "${HOME}/.ssh"
+    chmod 700 "${HOME}/.ssh"
+    ssh-keygen -t ed25519 -C "$email" -f "$key_path" -N ""
+  fi
+
+  # Point gitconfig.local at the signing key (idempotent)
+  local current_key
+  current_key="$(git config --file "${HOME}/.gitconfig.local" user.signingkey 2>/dev/null || true)"
+  if [[ "$current_key" != "${key_path}.pub" ]]; then
+    git config --file "${HOME}/.gitconfig.local" user.signingkey "${key_path}.pub"
+  fi
+
+  # Create allowed_signers file for local signature verification
+  local signers_file="${HOME}/.ssh/allowed_signers"
+  local pub_key
+  pub_key="$(cat "${key_path}.pub")"
+  local expected_line="${email} ${pub_key}"
+  if [[ ! -f "$signers_file" ]] || ! grep -qF "$pub_key" "$signers_file"; then
+    echo "$expected_line" > "$signers_file"
+  fi
+
+  # Upload signing key to GitHub if gh is authenticated
+  if is_command gh && gh auth status --hostname github.com >/dev/null 2>&1; then
+    log "Ensuring SSH signing key is on GitHub..."
+    gh ssh-key add "${key_path}.pub" --type signing --title "$(hostname)" 2>/dev/null || true
+  else
+    log "GitHub CLI not authenticated. Add signing key manually:"
+    log "  gh ssh-key add ~/.ssh/id_ed25519.pub --type signing"
+  fi
+}
+
 install_bun() {
   log "Installing Bun..."
   curl -fsSL https://bun.sh/install | bash
@@ -204,6 +256,7 @@ main() {
   ensure_homebrew
   brew_bundle
   ensure_github_auth
+  ensure_ssh_signing
   ensure_zsh_default_shell
   install_bun
   install_dotfiles

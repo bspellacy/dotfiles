@@ -50,7 +50,7 @@
     ],
     "deny": []
   },
-  "model": "opus",
+  "model": "opus[1m]",
   "enabledPlugins": {
     "commit-commands@claude-plugins-official": true,
     "code-simplifier@claude-plugins-official": true
