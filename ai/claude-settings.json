@@ -48,7 +48,12 @@
       "WebFetch",
       "WebSearch"
     ],
-    "deny": []
+    "deny": [
+      "Bash(gh pr comment:*)",
+      "Bash(gh issue comment:*)",
+      "Bash(gh pr review:*)",
+      "Bash(gh api */comments:*)"
+    ]
   },
   "model": "opus[1m]",
   "enabledPlugins": {
