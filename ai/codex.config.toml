@@ -15,3 +15,9 @@ shell_snapshot = true
 
 [projects."/Users/brennan/code"]
 trust_level = "trusted"
+
+[projects."/Users/brennan/code/patch"]
+trust_level = "trusted"
+
+[notice.model_migrations]
+"gpt-5.3-codex" = "gpt-5.4"

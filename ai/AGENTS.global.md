@@ -49,6 +49,7 @@
 - If a force push is truly required, use `--force-with-lease` and explain why.
 - Prefer feature branches + PRs; don't commit directly to the default branch unless asked.
 - Prefer `gh` for GitHub operations (PRs, checks, releases) and confirm before creating/updating PRs.
+- Always open PRs as drafts (`gh pr create --draft`) unless explicitly told otherwise.
 - Rebase feature branches on main before opening PR to keep history clean.
 
 ### Config changes

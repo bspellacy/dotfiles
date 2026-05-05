@@ -5,6 +5,7 @@ alias bi='bundle install'
 # Shell
 alias la='ls -a'
 alias oc='opencode'
+alias cw='claude --worktree'
 
 uq() {
   local target resolved prefix

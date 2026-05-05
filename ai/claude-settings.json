@@ -46,7 +46,8 @@
       "Glob",
       "Grep",
       "WebFetch",
-      "WebSearch"
+      "WebSearch",
+      "Skill(update-config)"
     ],
     "deny": [
       "Bash(gh pr comment:*)",
@@ -60,5 +61,23 @@
     "commit-commands@claude-plugins-official": true,
     "code-simplifier@claude-plugins-official": true
   },
-  "effortLevel": "high"
+  "effortLevel": "high",
+  "voiceEnabled": true,
+  "voice": {
+    "enabled": true,
+    "mode": "hold"
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "rtk hook claude"
+          }
+        ]
+      }
+    ]
+  }
 }

@@ -3,6 +3,7 @@ tap "homebrew/bundle"
 brew "git"
 brew "gh"
 brew "opencode"
+brew "rtk"
 
 brew "zsh"
 brew "starship"
