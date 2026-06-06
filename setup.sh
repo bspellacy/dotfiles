@@ -205,6 +205,9 @@ link_agents_configuration() {
 
   # Claude Code user settings
   link_file "${DOTFILES_DIR}/ai/claude-settings.json" "$HOME/.claude/settings.json"
+
+  # Conductor user settings
+  link_file "${DOTFILES_DIR}/ai/conductor.settings.toml" "$HOME/.conductor/settings.toml"
 }
 
 ensure_ssh_signing() {
