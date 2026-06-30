@@ -33,3 +33,7 @@ npm-debug.log
 # Potentiallyu sensitive information
 .env
 .env.*
+
+**/.claude/settings.local.json
+
+**/.claude/settings.local.json

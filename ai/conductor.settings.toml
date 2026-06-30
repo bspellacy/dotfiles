@@ -2,22 +2,25 @@
 default_workspace_location = "/Users/brennan/conductor/workspaces"
 tool_approvals_enabled = false
 
+[git]
+archive_on_merge = true
+branch_prefix = "bs/"
+branch_prefix_type = "custom"
+worktree_push_auto_setup_remote = true
+
 [models]
-default = "gpt-5.3-codex"
-review = "gpt-5.3-codex"
+default = "opus-4-8-1m"
 default_fast_mode = false
 default_plan_mode = false
+review = "gpt-5.3-codex"
 
 [models.codex]
 default_thinking_level = "high"
 review_thinking_level = "high"
 
-[git]
-branch_prefix_type = "custom"
-branch_prefix = "bs/"
-worktree_push_auto_setup_remote = true
-archive_on_merge = true
-
 [prompts]
-rename_branch = "Rename the branch using the required bs/ prefix and kebab-case, for example bs/fix-login-bug. Keep the name short and descriptive."
 create_pr = "Create PRs as drafts unless explicitly told otherwise. Use base branch main and keep the title concise."
+rename_branch = "Rename the branch using the required bs/ prefix and kebab-case, for example bs/fix-login-bug. Keep the name short and descriptive."
+
+[scripts]
+auto_run_after_setup = true
