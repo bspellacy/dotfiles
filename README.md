@@ -12,6 +12,8 @@
 - `toolchains/` — tool/runtime config (currently `mise.toml`).
 - `scripts/` — one-off scripts (e.g. macOS defaults).
 - `ai/` — agent instructions and configs (`AGENTS.global.md`, `codex.config.toml`, `conductor.settings.toml`, `opencode.json`).
+  - User-level files are symlinked into `$HOME` by `setup.sh` (e.g. `claude-settings.json` → `~/.claude/settings.json`).
+  - Repo-level files for this repo live here too and are symlinked back to the root: `claude-settings.local.json` → `.claude/settings.local.json`, `claude-skills/` → `.claude/skills/`, `conductor.settings.local.toml` → `.conductor/settings.local.toml`.
 
 ## Helpers
 

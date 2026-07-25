@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh repo *)",
+      "Bash(rtk ls *)",
+      "Bash(git config *)",
+      "Bash(git -C ~/code/patch rev-parse --is-inside-work-tree)",
+      "Bash(rtk read *)",
+      "Bash(git -C ~/code/patch config --local user.email \"brennan@usepatch.com\")",
+      "Bash(git -C ~/code/patch config user.email)",
+      "Bash(brew leaves *)",
+      "Bash(brew list *)",
+      "Bash(git mv *)",
+      "Bash(mv .conductor/settings.local.toml ai/conductor.settings.local.toml)",
+      "Bash(ln -sfn ../ai/claude-settings.local.json .claude/settings.local.json)",
+      "Bash(ln -sfn ../ai/claude-skills .claude/skills)",
+      "Bash(ln -sfn ../ai/conductor.settings.local.toml .conductor/settings.local.toml)"
+    ]
+  }
+}

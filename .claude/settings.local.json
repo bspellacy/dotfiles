@@ -1,8 +1,1 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(gh repo *)",
-      "Bash(rtk ls *)"
-    ]
-  }
-}
+../ai/claude-settings.local.json
