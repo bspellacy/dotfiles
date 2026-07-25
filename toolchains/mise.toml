@@ -1,6 +1,10 @@
 [tools]
 node = "lts"
-ruby = "latest"
+
+# No global `ruby` pin on purpose. Every project that needs Ruby declares its
+# own version (patch/.ruby-version, ~/code/.ruby-version, ...) and
+# idiomatic_version_file_enable_tools below lets mise honour those files. A
+# global `ruby = "latest"` just fights them and accumulates unused installs.
 
 [settings]
 experimental = true

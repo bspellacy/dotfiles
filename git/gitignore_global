@@ -30,10 +30,9 @@ npm-debug.log
 .vscode
 .bundle
 
-# Potentiallyu sensitive information
+# Potentially sensitive information
 .env
 .env.*
 
-**/.claude/settings.local.json
-
+# Agent scratch / machine-local settings
 **/.claude/settings.local.json

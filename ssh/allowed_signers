@@ -1,0 +1,9 @@
+# SSH signing keys trusted for verifying commit/tag signatures locally.
+# Referenced by git/gitconfig -> [gpg "ssh"] allowedSignersFile.
+#
+# These are PUBLIC keys — safe to commit. Keep old keys here after rotating so
+# that historical signed commits continue to verify.
+#
+# Format: <email> <key-type> <key> [comment]
+
+brennanspellacy@gmail.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILe/N/3bjHjB6hCl+4MI2XQSizfmAh4mhjol2Ka9jpaA brennanspellacy@gmail.com

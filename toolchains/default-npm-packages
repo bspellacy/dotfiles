@@ -1,0 +1,7 @@
+# Global npm packages mise installs into every Node version it manages.
+# Docs: https://mise.jdx.dev/lang/node.html#default-node-packages
+#
+# Without this, globals installed under one Node version silently vanish when
+# mise resolves a new one (or when the machine is rebuilt).
+
+@openai/codex
