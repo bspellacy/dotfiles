@@ -37,10 +37,4 @@ cask "zed"
 
 cask "1password-cli"
 cask "github"
-cask "iterm2"
 cask "mark-text"
-
-# NOTE: project dependencies (postgres, redis, overmind, awscli, docker,
-# chromedriver, gcloud, terraform, ...) intentionally live in each project's
-# own Brewfile — e.g. ~/code/patch/Brewfile — not here. Run `brew bundle`
-# from inside a project to install its deps.
