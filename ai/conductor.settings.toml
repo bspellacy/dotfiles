@@ -1,5 +1,4 @@
 "$schema" = "https://conductor.build/schemas/settings.schema.json"
-default_workspace_location = "/Users/brennan/conductor/workspaces"
 tool_approvals_enabled = false
 
 [git]
@@ -12,7 +11,7 @@ worktree_push_auto_setup_remote = true
 default = "opus-4-8-1m"
 default_fast_mode = false
 default_plan_mode = false
-review = "gpt-5.3-codex"
+review = "gpt-5.5"
 
 [models.codex]
 default_thinking_level = "high"
