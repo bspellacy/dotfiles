@@ -28,8 +28,6 @@ in each project's own `Brewfile` — e.g. `~/code/patch/Brewfile` — not here.
   - `gitconfig` — Git defaults + aliases; includes `~/.gitconfig.local` for machine-specific overrides.
   - `gitignore_global` — global ignores.
   - `gitattributes` — global attributes (line-ending normalization).
-- `ssh/`
-  - `allowed_signers` — public keys trusted for verifying commit signatures. Keep old keys here after rotating so historical commits still verify.
 - `zsh/` — Zsh config (`zshenv`, `zshrc`, `aliases.zsh`, `functions.zsh`).
 - `config/` — XDG-style app configs (`starship.toml`, `ghostty/config`, `zed/settings.json`).
 - `toolchains/` — tool/runtime config (`mise.toml`, `default-npm-packages`).
@@ -46,6 +44,13 @@ in each project's own `Brewfile` — e.g. `~/code/patch/Brewfile` — not here.
   `setup.sh` taps and trusts it before running `brew bundle`.
 - **Global npm packages** go in `toolchains/default-npm-packages` (symlinked to
   `~/.default-npm-packages`) so they survive a Node version change.
+- **`~/.ssh/allowed_signers` is generated, not tracked.** It is a trust list —
+  it decides which keys git accepts as valid signers — and this repo is public,
+  so it should not be editable by pull request. `setup.sh` rebuilds it from
+  your GitHub-published signing keys (a public, unauthenticated endpoint),
+  falling back to the local key when offline. Old keys keep verifying as long
+  as they stay registered on GitHub; any manually added lines are preserved
+  across regeneration.
 
 ## Helpers
 

@@ -25,13 +25,18 @@ scratch. The SSH key is the one worth actually copying.
 
 ### Why restore the SSH key rather than generate a new one
 
-`ssh/allowed_signers` in this repo is what git checks commit signatures against.
-If you generate a fresh key, every commit you've already signed shows as
-untrusted unless the old public key stays in that file. `setup.sh` will prompt
-before generating and warn if the active key isn't listed.
+Restoring keeps one key for both git auth and signing, and avoids churn in your
+GitHub key list. `setup.sh` prompts before generating a replacement rather than
+doing it silently.
 
-If you *do* rotate: keep the old line in `ssh/allowed_signers`, append the new
-one, and commit.
+Signature verification itself is resilient either way: `~/.ssh/allowed_signers`
+is **generated** by `setup.sh` from your GitHub-published signing keys, not
+tracked in this repo (it's a trust list, and the repo is public). Old commits
+keep verifying as long as the old key stays registered on GitHub — so if you do
+rotate, **add the new key without deleting the old one.**
+
+To trust a key that is no longer on GitHub, append it to
+`~/.ssh/allowed_signers` by hand; regeneration preserves manual lines.
 
 ## 2. On the new machine
 
