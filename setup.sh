@@ -39,9 +39,23 @@ ensure_homebrew() {
   fi
 }
 
+trust_third_party_taps() {
+  # Homebrew refuses to load formulae from untrusted third-party taps, which
+  # aborts `brew bundle` (and therefore this whole script, under `set -e`).
+  # Tap + trust them up front so the bundle can resolve them.
+  local taps=("anomalyco/tap")
+  local tap
+  for tap in "${taps[@]}"; do
+    brew tap "$tap" >/dev/null 2>&1 || true
+    # `brew trust` only exists on newer Homebrew; ignore if unavailable.
+    brew trust "$tap" >/dev/null 2>&1 || true
+  done
+}
+
 brew_bundle() {
   log "Installing/updating Homebrew bundle..."
   brew update
+  trust_third_party_taps
   brew bundle --file "${DOTFILES_DIR}/Brewfile"
 }
 
@@ -97,25 +111,43 @@ ensure_zsh_default_shell() {
   fi
 }
 
+remove_stale_symlink() {
+  # Drop a symlink whose target no longer exists (e.g. a config we deleted from
+  # the repo). Leaves real files and healthy links alone.
+  local path="$1"
+  if [[ -L "$path" && ! -e "$path" ]]; then
+    log "Removing stale symlink: $path -> $(readlink "$path")"
+    rm -f "$path"
+  fi
+}
+
 install_dotfiles() {
   log "Linking dotfiles..."
   # Zsh
   link_file "${DOTFILES_DIR}/zsh/zshenv"    "${HOME}/.zshenv"
-  if [[ -f "${DOTFILES_DIR}/zsh/zprofile" ]]; then
-    link_file "${DOTFILES_DIR}/zsh/zprofile"  "${HOME}/.zprofile"
-  fi
   link_file "${DOTFILES_DIR}/zsh/zshrc"     "${HOME}/.zshrc"
+  # We don't ship a zprofile; clean up links left by older versions of this repo.
+  remove_stale_symlink "${HOME}/.zprofile"
 
   # Git
   link_file "${DOTFILES_DIR}/git/gitconfig"        "${HOME}/.gitconfig"
   link_file "${DOTFILES_DIR}/git/gitignore_global" "${HOME}/.gitignore_global"
+  # gitconfig sets core.attributesfile = ~/.gitattributes
+  link_file "${DOTFILES_DIR}/git/gitattributes"    "${HOME}/.gitattributes"
+
+  # SSH signing trust list (public keys only; gitconfig points at this)
+  link_file "${DOTFILES_DIR}/ssh/allowed_signers" "${HOME}/.ssh/allowed_signers"
 
   # Starship + Ghostty (XDG config)
   link_file "${DOTFILES_DIR}/config/starship.toml" "${HOME}/.config/starship.toml"
   link_file "${DOTFILES_DIR}/config/ghostty/config" "${HOME}/.config/ghostty/config"
 
-  # mise toolchain config
+  # Zed (primary editor — $EDITOR)
+  link_file "${DOTFILES_DIR}/config/zed/settings.json" "${HOME}/.config/zed/settings.json"
+
+  # mise toolchain config + global npm packages
   link_file "${DOTFILES_DIR}/toolchains/mise.toml" "${HOME}/.config/mise/config.toml"
+  link_file "${DOTFILES_DIR}/toolchains/default-npm-packages" "${HOME}/.default-npm-packages"
 }
 
 ensure_github_auth() {
@@ -212,16 +244,31 @@ link_agents_configuration() {
 
 ensure_ssh_signing() {
   local key_path="${HOME}/.ssh/id_ed25519"
+  local signers_file="${DOTFILES_DIR}/ssh/allowed_signers"
   local email
   email="$(git config user.email 2>/dev/null || echo "brennanspellacy@gmail.com")"
 
-  # Generate SSH key if it doesn't exist
+  mkdir -p "${HOME}/.ssh"
+  chmod 700 "${HOME}/.ssh"
+
   if [[ ! -f "$key_path" ]]; then
-    log "Generating SSH key for commit signing..."
-    mkdir -p "${HOME}/.ssh"
-    chmod 700 "${HOME}/.ssh"
+    log "No signing key at ${key_path}."
+    echo "  Prefer RESTORING your existing key (1Password / backup) over generating"
+    echo "  a new one — a new key means previously signed commits no longer verify"
+    echo "  unless you keep the old public key in ssh/allowed_signers."
+    echo
+    if [[ ! -t 0 ]]; then
+      log "Non-interactive shell; skipping key generation. Restore the key, then re-run."
+      return 0
+    fi
+    if ! confirm "Generate a NEW ed25519 signing key now?"; then
+      log "Skipped. Restore ~/.ssh/id_ed25519 and re-run ./setup.sh"
+      return 0
+    fi
     ssh-keygen -t ed25519 -C "$email" -f "$key_path" -N ""
   fi
+
+  chmod 600 "$key_path"
 
   # Point gitconfig.local at the signing key (idempotent)
   local current_key
@@ -230,13 +277,15 @@ ensure_ssh_signing() {
     git config --file "${HOME}/.gitconfig.local" user.signingkey "${key_path}.pub"
   fi
 
-  # Create allowed_signers file for local signature verification
-  local signers_file="${HOME}/.ssh/allowed_signers"
-  local pub_key
-  pub_key="$(cat "${key_path}.pub")"
-  local expected_line="${email} ${pub_key}"
-  if [[ ! -f "$signers_file" ]] || ! grep -qF "$pub_key" "$signers_file"; then
-    echo "$expected_line" > "$signers_file"
+  # allowed_signers is tracked in the repo (and symlinked by install_dotfiles) so
+  # that old keys stay trusted. Warn — don't overwrite — if this key isn't listed.
+  local pub_key_body
+  pub_key_body="$(awk '{print $1" "$2}' "${key_path}.pub")"
+  if ! grep -qF "$pub_key_body" "$signers_file" 2>/dev/null; then
+    log "WARNING: this machine's signing key is not in ssh/allowed_signers."
+    echo "  Your own signatures will show as untrusted until you add it:"
+    echo "    echo \"${email} ${pub_key_body}\" >> ${signers_file}"
+    echo "  Then commit it to the dotfiles repo."
   fi
 
   # Upload signing key to GitHub if gh is authenticated
@@ -249,7 +298,20 @@ ensure_ssh_signing() {
   fi
 }
 
+ensure_gh_config() {
+  # gh rewrites ~/.config/gh/config.yml itself, so we set preferences through
+  # the CLI rather than symlinking the file.
+  is_command gh || return 0
+  log "Configuring gh..."
+  gh config set git_protocol https >/dev/null 2>&1 || true
+  gh alias set co 'pr checkout' --clobber >/dev/null 2>&1 || true
+}
+
 install_bun() {
+  if is_command bun || [[ -x "${HOME}/.bun/bin/bun" ]]; then
+    log "Bun already installed; skipping (run 'bun upgrade' to update)."
+    return 0
+  fi
   log "Installing Bun..."
   curl -fsSL https://bun.sh/install | bash
 }
@@ -259,16 +321,19 @@ main() {
   ensure_homebrew
   brew_bundle
   ensure_github_auth
-  ensure_ssh_signing
+  ensure_gh_config
   ensure_zsh_default_shell
   install_bun
+  # Link before signing so ~/.ssh/allowed_signers exists when we check it.
   install_dotfiles
+  ensure_ssh_signing
   run_macos_defaults
   ensure_mise_activated
   link_agents_configuration
 
   log "Done."
   echo "Restart your terminal (or run: exec zsh)."
+  echo "Then see MIGRATION.md for the credentials that must be moved by hand."
 }
 
 main "$@"
