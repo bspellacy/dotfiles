@@ -9,6 +9,10 @@ set -euo pipefail
 # ones you want rather than discovering them on a new machine.
 
 # ---- Keyboard ----
+# Caps Lock -> Escape is NOT a `defaults` setting: it's a hidutil key remap that
+# resets on reboot, so it lives in a launch agent instead. See
+# config/launchd/com.brennan.dotfiles.capslock-escape.plist.
+#
 # Hold a key to repeat instead of showing the accent picker. Required for
 # usable vim navigation (config/zed/settings.json sets "vim_mode": true).
 defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false

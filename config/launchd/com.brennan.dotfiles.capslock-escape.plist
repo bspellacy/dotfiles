@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Map Caps Lock -> Escape on every attached keyboard.
+
+  hidutil's UserKeyMapping only lives until reboot, so it has to be re-applied
+  at login; that's what this agent is for. 0x700000039 is the HID usage for
+  Caps Lock, 0x700000029 is Escape.
+
+  Applies to all keyboards, built-in and external. To undo for the current
+  session:  hidutil property --set '{"UserKeyMapping":[]}'
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.brennan.dotfiles.capslock-escape</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/bin/hidutil</string>
+    <string>property</string>
+    <string>--set</string>
+    <string>{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x700000039,"HIDKeyboardModifierMappingDst":0x700000029}]}</string>
+  </array>
+  <key>RunAtLoad</key>
+  <true/>
+</dict>
+</plist>

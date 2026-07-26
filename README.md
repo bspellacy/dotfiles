@@ -30,6 +30,7 @@ in each project's own `Brewfile` — e.g. `~/code/patch/Brewfile` — not here.
   - `gitattributes` — global attributes (line-ending normalization).
 - `zsh/` — Zsh config (`zshenv`, `zshrc`, `aliases.zsh`, `functions.zsh`).
 - `config/` — XDG-style app configs (`starship.toml`, `ghostty/config`, `zed/settings.json`).
+  - `launchd/` — user launch agents. Copied (not symlinked) into `~/Library/LaunchAgents` and bootstrapped by `setup.sh`.
 - `toolchains/` — tool/runtime config (`mise.toml`, `default-npm-packages`).
 - `scripts/` — one-off scripts (e.g. macOS defaults).
 - `ai/` — agent instructions and configs (`AGENTS.global.md`, `codex.config.toml`, `conductor.settings.toml`, `opencode.json`).
@@ -51,6 +52,14 @@ in each project's own `Brewfile` — e.g. `~/code/patch/Brewfile` — not here.
   falling back to the local key when offline. Old keys keep verifying as long
   as they stay registered on GitHub; any manually added lines are preserved
   across regeneration.
+
+- **Caps Lock is remapped to Escape** by a launch agent
+  (`config/launchd/com.brennan.dotfiles.capslock-escape.plist`) rather than
+  System Settings, so it covers external keyboards too. `hidutil` remaps only
+  last until reboot, hence the agent. To turn it off:
+  `launchctl bootout gui/$(id -u)/com.brennan.dotfiles.capslock-escape && hidutil property --set '{"UserKeyMapping":[]}'`
+  (and delete `~/Library/LaunchAgents/com.brennan.dotfiles.capslock-escape.plist`
+  so `setup.sh` doesn't reinstate it).
 
 ## Helpers
 

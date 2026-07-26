@@ -196,6 +196,36 @@ install_dotfiles() {
   link_file "${DOTFILES_DIR}/toolchains/default-npm-packages" "${HOME}/.default-npm-packages"
 }
 
+install_launch_agents() {
+  # launchd is unreliable with symlinked plists, so these are copied rather than
+  # linked. Re-running setup.sh refreshes and reloads any that changed.
+  local agents_dir="${HOME}/Library/LaunchAgents"
+  local uid domain src label dest
+  uid="$(id -u)"
+  domain="gui/${uid}"
+  mkdir -p "$agents_dir"
+
+  for src in "${DOTFILES_DIR}"/config/launchd/*.plist; do
+    [[ -e "$src" ]] || continue
+    label="$(basename "$src" .plist)"
+    dest="${agents_dir}/${label}.plist"
+
+    # -L check first: an older version of this repo may have symlinked the plist,
+    # and cp through a symlink would write back into the repo.
+    if [[ -L "$dest" || ! -f "$dest" ]] || ! cmp -s "$src" "$dest"; then
+      log "Installing launch agent: ${label}"
+      rm -f "$dest"
+      cp "$src" "$dest"
+      launchctl bootout "${domain}/${label}" >/dev/null 2>&1 || true
+    elif launchctl print "${domain}/${label}" >/dev/null 2>&1; then
+      continue # up to date and already loaded
+    fi
+
+    launchctl bootstrap "$domain" "$dest" >/dev/null 2>&1 \
+      || log "Could not load ${label}. Run manually: launchctl bootstrap ${domain} ${dest}"
+  done
+}
+
 ensure_github_auth() {
   if ! is_command gh; then
     return 0
@@ -439,6 +469,7 @@ main() {
   ensure_zsh_default_shell
   install_bun
   install_dotfiles
+  install_launch_agents
   ensure_ssh_signing
   ensure_allowed_signers
   run_macos_defaults
