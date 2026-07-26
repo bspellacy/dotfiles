@@ -52,6 +52,11 @@ exec zsh
 first run exits early after kicking off the GUI installer; finish that and run it
 again.
 
+**Your account must be an Administrator.** Homebrew's installer needs root to
+create `/opt/homebrew` and aborts with `Need sudo access on macOS...` otherwise.
+Check under System Settings → Users & Groups. On a work-managed Mac you may need
+IT to grant this before `setup.sh` can get past the Homebrew step.
+
 ## 3. After setup.sh
 
 - **Restore `~/.bundle/config`** (see table above) before touching any Ruby project.

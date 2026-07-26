@@ -28,6 +28,26 @@ ensure_xcode_clt() {
 ensure_homebrew() {
   if is_command brew; then return 0; fi
   log "Installing Homebrew..."
+
+  # Homebrew's installer needs root to create its prefix, and it checks that
+  # up front via have_sudo_access(). Under NONINTERACTIVE=1 it invokes
+  # `sudo -n`, which by design NEVER prompts — so on a fresh machine with no
+  # cached sudo timestamp the check fails instantly and it aborts with:
+  #   Need sudo access on macOS (e.g. the user <you> needs to be an Administrator)!
+  # even for an account that *is* an admin.
+  #
+  # Prime the sudo timestamp first (this is what actually prompts for the
+  # password), then the installer's non-interactive check succeeds.
+  if [[ -t 0 ]]; then
+    echo "Homebrew's installer needs administrator access to create its prefix."
+    if ! sudo -v; then
+      log "Could not obtain sudo access."
+      echo "  Homebrew requires an Administrator account on macOS."
+      echo "  Check: System Settings > Users & Groups (your user must be 'Administrator')."
+      exit 1
+    fi
+  fi
+
   NONINTERACTIVE=1 /bin/bash -c \
     "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
