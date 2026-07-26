@@ -1,4 +1,3 @@
-tap "homebrew/bundle"
 tap "anomalyco/tap" # provides `opencode`
 
 brew "git"
