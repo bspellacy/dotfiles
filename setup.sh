@@ -94,20 +94,46 @@ link_file() {
 }
 
 ensure_zsh_default_shell() {
-  # Ensure brew zsh is in /etc/shells
-  local brew_zsh=""
-  if [[ -x /opt/homebrew/bin/zsh ]]; then brew_zsh="/opt/homebrew/bin/zsh"; fi
-  if [[ -x /usr/local/bin/zsh ]]; then brew_zsh="/usr/local/bin/zsh"; fi
+  # Derive the path from the active Homebrew prefix rather than guessing
+  # Apple Silicon vs Intel (the old version preferred /usr/local when both existed).
+  local brew_prefix brew_zsh
+  brew_prefix="$(brew --prefix 2>/dev/null || true)"
+  [[ -n "$brew_prefix" ]] || return 0
+  brew_zsh="${brew_prefix}/bin/zsh"
+  [[ -x "$brew_zsh" ]] || return 0
 
-  if [[ -n "$brew_zsh" ]]; then
-    if ! grep -q "$brew_zsh" /etc/shells; then
-      log "Adding Homebrew zsh to /etc/shells (requires sudo)..."
-      echo "$brew_zsh" | sudo tee -a /etc/shells >/dev/null
+  local needs_shells_entry=false needs_chsh=false
+  grep -qxF "$brew_zsh" /etc/shells || needs_shells_entry=true
+  [[ "$SHELL" != "$brew_zsh" ]] && needs_chsh=true
+  if [[ "$needs_shells_entry" == false && "$needs_chsh" == false ]]; then
+    return 0
+  fi
+
+  # This is the only part of setup.sh that needs root. Check up front and skip
+  # cleanly if sudo isn't usable — a failure here used to abort the entire run
+  # under `set -euo pipefail`, before any dotfiles were linked.
+  if ! sudo -v >/dev/null 2>&1; then
+    log "Skipping default-shell change: sudo is unavailable or was declined."
+    echo "  Everything else will still be set up. To finish this step later:"
+    echo "    echo '${brew_zsh}' | sudo tee -a /etc/shells"
+    echo "    chsh -s '${brew_zsh}'"
+    return 0
+  fi
+
+  if [[ "$needs_shells_entry" == true ]]; then
+    log "Adding Homebrew zsh to /etc/shells (requires sudo)..."
+    if ! echo "$brew_zsh" | sudo tee -a /etc/shells >/dev/null; then
+      log "Could not write /etc/shells; skipping default-shell change."
+      return 0
     fi
-    if [[ "$SHELL" != "$brew_zsh" ]]; then
-      log "Setting default shell to Homebrew zsh (requires sudo)..."
-      sudo chsh -s "$brew_zsh" "$USER" || true
-    fi
+  fi
+
+  if [[ "$needs_chsh" == true ]]; then
+    log "Setting default shell to Homebrew zsh..."
+    # chsh for your own user doesn't need root; fall back to sudo if it does.
+    chsh -s "$brew_zsh" 2>/dev/null \
+      || sudo chsh -s "$brew_zsh" "$USER" 2>/dev/null \
+      || log "chsh failed. Run manually: chsh -s ${brew_zsh}"
   fi
 }
 

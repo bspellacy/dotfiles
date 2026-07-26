@@ -31,15 +31,27 @@ defaults write com.apple.finder ShowPathbar -bool true
 defaults write com.apple.finder ShowStatusBar -bool true
 # Renaming a file extension is routine here; skip the confirmation
 defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
+# Show hidden files (.git, .env, ...). cmd-shift-. still toggles ad hoc.
+defaults write com.apple.finder AppleShowAllFiles -bool true
+# Open new windows in list view (icnv | clmv | Flwv | Nlsv).
+# Only affects folders with no remembered view of their own.
+defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
+# Search the current folder, not the whole Mac ("SCev" = This Mac)
+defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
 # Don't litter network volumes and USB drives with .DS_Store files
 defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
 killall Finder >/dev/null 2>&1 || true
 
 # ---- Dock ----
-# Animation timing only — these are no-ops unless you turn on autohide yourself.
+defaults write com.apple.dock autohide -bool true
+# Reveal instantly and animate quickly (these only apply when autohide is on)
 defaults write com.apple.dock autohide-time-modifier -float 0.2
 defaults write com.apple.dock autohide-delay -float 0
+# Keep Spaces in a fixed order so ctrl+number/arrow stays predictable
+defaults write com.apple.dock mru-spaces -bool false
+# No recent-apps section, so pinned icons keep stable screen positions
+defaults write com.apple.dock show-recents -bool false
 killall Dock >/dev/null 2>&1 || true
 
 # ---- Save / print panels ----
@@ -55,31 +67,5 @@ mkdir -p "$HOME/Screenshots"
 defaults write com.apple.screencapture location -string "$HOME/Screenshots"
 defaults write com.apple.screencapture type -string "png"
 killall SystemUIServer >/dev/null 2>&1 || true
-
-# ---- Opt-in: uncomment what you actually want ----
-# As of this writing all of these are unset on the current machine, i.e. you are
-# running the macOS stock behaviour. Left off so this script reproduces your
-# setup rather than imposing one.
-#
-# Dock autohide
-# defaults write com.apple.dock autohide -bool true
-# Don't reorder Spaces by recent use (keeps window muscle memory stable)
-# defaults write com.apple.dock mru-spaces -bool false
-# Hide recently-used apps in the Dock
-# defaults write com.apple.dock show-recents -bool false
-# Show hidden files in Finder (cmd-shift-. toggles this ad hoc anyway)
-# defaults write com.apple.finder AppleShowAllFiles -bool true
-# Default Finder to list view (icnv | clmv | Flwv | Nlsv)
-# defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
-# Search the current folder rather than the whole Mac
-# defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
-# Sort folders above files
-# defaults write com.apple.finder _FXSortFoldersFirst -bool true
-# Tap to click
-# defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
-# defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
-# defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
-# Drop the drop-shadow on window screenshots
-# defaults write com.apple.screencapture disable-shadow -bool true
 
 echo "macOS defaults applied. Some changes need a logout/restart to fully apply."
