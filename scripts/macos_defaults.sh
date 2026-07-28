@@ -28,6 +28,45 @@ defaults write NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled -bool false
 defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
 defaults write NSGlobalDomain NSAutomaticCapitalizationEnabled -bool false
 
+# ---- Keyboard shortcuts (symbolic hotkeys) ----
+# cmd-d toggles Do Not Disturb. macOS ships an unassigned shortcut for this
+# (System Settings > Keyboard > Keyboard Shortcuts > Mission Control > "Do Not
+# Disturb"); it's symbolic hotkey 175. Assigning it here beats going through
+# Shortcuts.app + a hotkey daemon: no extra dependency, no accessibility
+# permission, and it's the same slot the UI writes to.
+#
+# parameters = (ASCII of the key, virtual keycode, modifier mask)
+#   100     = 'd'
+#   2       = kVK_ANSI_D
+#   1048576 = 0x100000, NSEventModifierFlagCommand
+#
+# NOTE: this is a system-wide hotkey, so it WINS over any app's own cmd-d —
+# Chrome's Add Bookmark, Finder's Duplicate, "Don't Save" in save sheets. To
+# use a different combo, change `parameters` (e.g. cmd-shift-d is
+# 1048576 + 131072 = 1179648). To remove it entirely:
+#   defaults delete com.apple.symbolichotkeys AppleSymbolicHotKeys 175
+# followed by the activateSettings call below (or a logout).
+#
+# -dict-add merges into AppleSymbolicHotKeys rather than replacing the whole
+# dict, so every other shortcut macOS has recorded survives.
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 175 '
+<dict>
+  <key>enabled</key><true/>
+  <key>value</key>
+  <dict>
+    <key>type</key><string>standard</string>
+    <key>parameters</key>
+    <array>
+      <integer>100</integer>
+      <integer>2</integer>
+      <integer>1048576</integer>
+    </array>
+  </dict>
+</dict>'
+# Reload the hotkey table so the binding works without logging out.
+/System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u \
+  >/dev/null 2>&1 || true
+
 # ---- Finder ----
 defaults write NSGlobalDomain AppleShowAllExtensions -bool true
 # Path + status bar: cheap orientation when digging through project trees

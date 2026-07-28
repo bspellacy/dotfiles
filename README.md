@@ -61,6 +61,18 @@ in each project's own `Brewfile` — e.g. `~/code/patch/Brewfile` — not here.
   (and delete `~/Library/LaunchAgents/com.brennan.dotfiles.capslock-escape.plist`
   so `setup.sh` doesn't reinstate it).
 
+- **`cmd-d` toggles Do Not Disturb**, set in `scripts/macos_defaults.sh` via
+  macOS's own (normally unassigned) shortcut for it — symbolic hotkey `175`,
+  the one System Settings > Keyboard > Keyboard Shortcuts > Mission Control
+  writes to. No hotkey daemon or Shortcuts.app detour needed.
+
+  Because it's a *system-wide* hotkey it takes precedence over every app's own
+  `cmd-d`: Ghostty's split-right, Zed's select-next-match, Chrome's Add
+  Bookmark, Finder's Duplicate, "Don't Save" in save sheets. Change the combo
+  by editing `parameters` in that script, or drop the binding with:
+  `defaults delete com.apple.symbolichotkeys AppleSymbolicHotKeys 175` followed
+  by `/System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u`.
+
 ## Helpers
 
 - `uq` — unquarantine a Homebrew-installed app or binary.
