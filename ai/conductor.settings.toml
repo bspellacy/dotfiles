@@ -8,10 +8,10 @@ branch_prefix_type = "custom"
 worktree_push_auto_setup_remote = true
 
 [models]
-default = "opus-4-8-1m"
+default = "codex:gpt-5.6-sol"
 default_fast_mode = false
 default_plan_mode = false
-review = "gpt-5.5"
+review = "gpt-5.6-sol"
 
 [models.codex]
 default_thinking_level = "high"

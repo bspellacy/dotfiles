@@ -1,5 +1,5 @@
-model = "gpt-5.3-codex"
-model_reasoning_effort = "high"
+model = "gpt-5.6-sol"
+model_reasoning_effort = "xhigh"
 tool_output_token_limit = 25000
 # Leave room for native compaction near the 272–273k context window.
 # Formula: 273000 - (tool_output_token_limit + 15000)
@@ -19,5 +19,17 @@ trust_level = "trusted"
 [projects."/Users/brennan/code/patch"]
 trust_level = "trusted"
 
+[projects."/Users/brennan/code/dotfiles"]
+trust_level = "trusted"
+
+[projects."/Users/brennan/Library/Application Support/com.conductor.app/bin"]
+trust_level = "trusted"
+
+[projects."/Users/brennan/code/www"]
+trust_level = "trusted"
+
 [notice.model_migrations]
 "gpt-5.3-codex" = "gpt-5.4"
+
+[tui.model_availability_nux]
+"gpt-5.6-sol" = 3
